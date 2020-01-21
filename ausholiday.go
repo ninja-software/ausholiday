@@ -76,7 +76,6 @@ var States = map[string]State{
 
 // inputCSV csv file structure
 type inputCSV struct {
-	RawDate         string `csv:"Raw Date"`
 	Date            string `csv:"Date"`
 	HolidayName     string `csv:"Holiday Name"`
 	Information     string `csv:"Information"`

@@ -3,7 +3,6 @@ package ausholiday
 import (
 	"encoding/csv"
 	"io"
-	"strconv"
 	"strings"
 	"time"
 
@@ -26,17 +25,16 @@ func NewFromReader(csvfile io.Reader) (*AusHoliday, error) {
 		return nil, err
 	}
 
+	ymd := "20060102"
+	loc, _ := time.LoadLocation("Australia/Sydney")
+
 	holidays := []*Holiday{}
 	for _, row := range rows {
 		// work out time using unix time
-		sec, err := strconv.Atoi(row.RawDate)
+		t, err := time.ParseInLocation(ymd, row.Date, loc)
 		if err != nil {
 			continue
 		}
-
-		t := time.Unix(int64(sec), 0)
-		// add offset time because csv raw date is based for GMT+10:00
-		t.Add(time.Second * 36000)
 
 		// note this will basically accept any text, so it doesnt do sanity check on state
 		// TODO add sanity check
