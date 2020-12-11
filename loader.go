@@ -26,14 +26,17 @@ func NewFromReader(csvfile io.Reader) (*AusHoliday, error) {
 	}
 
 	ymd := "20060102"
-	loc, _ := time.LoadLocation("Australia/Sydney")
+	loc, err := time.LoadLocation("Australia/Sydney")
+	if err != nil {
+		return nil, err
+	}
 
 	holidays := []*Holiday{}
 	for _, row := range rows {
 		// work out time using unix time
 		t, err := time.ParseInLocation(ymd, row.Date, loc)
 		if err != nil {
-			continue
+			return nil, err
 		}
 
 		// note this will basically accept any text, so it doesnt do sanity check on state
