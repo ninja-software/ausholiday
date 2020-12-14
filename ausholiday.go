@@ -13,6 +13,9 @@ import (
 	"time"
 )
 
+// Version of release for ausholiday
+const Version = "v1.1.2"
+
 var onceAusHoliday sync.Once
 var xholidays []*Holiday
 
