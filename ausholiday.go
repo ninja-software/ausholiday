@@ -99,3 +99,81 @@ func init() {
 		xholidays = days.Holidays
 	})
 }
+
+// Holiday alternative
+type HolidayAlt struct {
+	HolidayName     string
+	Information     string
+	MoreInformation string
+	Jurisdiction    State
+	Timezone        string
+
+	Month   time.Month
+	Week    int
+	Weekday time.Weekday
+}
+
+var holidayAlts = []*HolidayAlt{
+	{
+		HolidayName:     "Dawin Show Day",
+		Information:     "",
+		MoreInformation: "",
+		Jurisdiction:    NT,
+		Timezone:        "Australia/Darwin",
+
+		Month:   time.July,
+		Week:    4,
+		Weekday: time.Friday,
+	},
+}
+
+func IsHolidayAlt(state State, date time.Time) bool {
+
+	for _, holidayAlt := range holidayAlts {
+		if holidayAlt.Jurisdiction != state {
+			continue
+		}
+
+		location, err := time.LoadLocation(holidayAlt.Timezone)
+		if err != nil {
+			continue
+		}
+
+		// convert time in the timezone
+		timeWithTimezone := date.In(location)
+
+		y := timeWithTimezone.Year()
+		m := timeWithTimezone.Month()
+		d := timeWithTimezone.Day()
+		wd := timeWithTimezone.Weekday()
+
+		// check month
+		if holidayAlt.Month != m {
+			continue
+		}
+
+		// check weekday
+		if holidayAlt.Weekday != wd {
+			continue
+		}
+
+		// check date
+		firstDayOfTheMonth := time.Date(y, m, 1, 0, 0, 0, 0, time.UTC)
+
+		firstWeekdayOfTheMonth := int(firstDayOfTheMonth.Weekday())
+
+		diffOfTheDays := int(wd) - firstWeekdayOfTheMonth
+		if diffOfTheDays < 0 {
+			diffOfTheDays += 7
+		}
+
+		if d != firstDayOfTheMonth.Add(time.Duration(diffOfTheDays*24)*time.Hour).Add(time.Duration((holidayAlt.Week-1)*7*24)*time.Hour).Day() {
+			continue
+		}
+
+		return true
+
+	}
+
+	return false
+}

@@ -104,6 +104,38 @@ func testIsHolidayFunc(hday *AusHoliday, t1 time.Time, expect bool) func(t *test
 	}
 }
 
+func TestIsHolidayAlt(t *testing.T) {
+	var t1 time.Time
+
+	t1 = ezTime(2022, 7, 22)
+	t.Run("Darwin Show Day Check 2022", testIsHolidayAlt(NT, t1, true))
+
+	t1 = ezTime(2023, 7, 28)
+	t.Run("Darwin Show Day Check 2023", testIsHolidayAlt(NT, t1, true))
+
+	t1 = ezTime(2024, 7, 26)
+	t.Run("Darwin Show Day Check 2024", testIsHolidayAlt(NT, t1, true))
+
+	t1 = ezTime(2025, 7, 25)
+	t.Run("Darwin Show Day Check 2025", testIsHolidayAlt(NT, t1, true))
+
+	t1 = ezTime(2026, 7, 24)
+	t.Run("Darwin Show Day Check 2026", testIsHolidayAlt(NT, t1, true))
+
+	t1 = ezTime(2026, 7, 25)
+	t.Run("Darwin Show Day Check False", testIsHolidayAlt(NT, t1, false))
+}
+
+func testIsHolidayAlt(state State, date time.Time, expect bool) func(t *testing.T) {
+	return func(t *testing.T) {
+		b := IsHolidayAlt(state, date)
+		if b != expect {
+			t.Errorf("IsHoliday was incorrect, got: %t, want: %t", b, expect)
+		}
+	}
+
+}
+
 func TestBusinessDays(t *testing.T) {
 	var t1, t2 time.Time
 

@@ -127,7 +127,8 @@ func IsHoliday(state State, t time.Time, holidays ...*Holiday) bool {
 		}
 	}
 
-	return false
+	// final check if it is a alt holiday
+	return IsHolidayAlt(state, t)
 }
 
 // IsHolidayAny is it a holiday in any state
